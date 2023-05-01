@@ -2,8 +2,8 @@ import os,sys
 import torch
 import numpy as np
 
-import config
-import constants
+#import config
+#import constants
 from smplx import SMPL
 # Part of the codes are brought from https://github.com/mkocabas/VIBE/blob/master/lib/utils/eval_utils.py
 
@@ -470,9 +470,17 @@ def test():
     for i in range(100):
         r1 = np.random.rand(3,14,3)
         r2 = np.random.rand(3,14,3)
+        predicted = np.random.rand(3,14,3)
+        target = np.random.rand(3,14,3)
+        #add mask to the end dim of target, so that the last dim is 4, set last dim to 1
+        target = np.concatenate((target,np.ones((3,14,1))),axis=2)
         pmpjpe = p_mpjpe(r1, r2,with_sRt=False)
-        pmpjpe_torch = p_mpjpe_torch(torch.from_numpy(r1), torch.from_numpy(r2),with_sRt=False,full_torch=True)
-        print('pmpjpe: {}; {:.6f}; {:.6f}; {:.6f}'.format(pmpjpe==pmpjpe_torch.numpy(),pmpjpe,pmpjpe_torch.numpy(), pmpjpe-pmpjpe_torch.numpy()))
+        #pmpjpe_torch = p_mpjpe_torch(torch.from_numpy(r1), torch.from_numpy(r2),with_sRt=False,full_torch=True)
+        #print('pmpjpe: {}; {:.6f}; {:.6f}; {:.6f}'.format(pmpjpe==pmpjpe_torch.numpy(),pmpjpe,pmpjpe_torch.numpy(), pmpjpe-pmpjpe_torch.numpy()))
+        print('pmpjpe: {:.6f}'.format(pmpjpe))
+        #ordinary_mpjpe = compute_mpjpe(r1, r2)
+        #print('ordinary_mpjpe: {:.6f}'.format(ordinary_mpjpe))
+        normalized_mpjpe = n_mpjpe(predicted, target)
         '''
         pmpjpe,(s,R,t),(H,U, s, Vt) = p_mpjpe(r1, r2,with_sRt=True)
         pmpjpe_torch,(s_torch,R_torch,t_torch),(H_torch,U_torch, s_torch, Vt_torch) = p_mpjpe_torch(torch.from_numpy(r1), torch.from_numpy(r2),with_sRt=True,full_torch=True)
